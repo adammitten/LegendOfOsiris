@@ -19,6 +19,12 @@ public class PlayerMovement : MonoBehaviour
         anim.SetFloat("Horizontal", movement.x);
         anim.SetFloat("Vertical", movement.y);
         anim.SetFloat("Speed", movement.sqrMagnitude);
+
+        if(Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
+        {
+            anim.SetFloat("LastMoveX", Input.GetAxisRaw("Horizontal"));
+            anim.SetFloat("LastMoveY", Input.GetAxisRaw("Vertical"));
+        }
     }
 
     void FixedUpdate()
