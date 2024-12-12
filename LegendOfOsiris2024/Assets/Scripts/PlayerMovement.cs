@@ -5,6 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float runSpeed = 10f;
+    private float currentSpeed;
+
+    private bool isRunning = false;
+
     public Rigidbody2D rb;
     public Animator anim;
 
@@ -20,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
         anim.SetFloat("Vertical", movement.y);
         anim.SetFloat("Speed", movement.sqrMagnitude);
 
+        HandleRunning();
+
         if(Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
         {
             anim.SetFloat("LastMoveX", Input.GetAxisRaw("Horizontal"));
@@ -27,8 +34,27 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void HandleRunning()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            isRunning = true;
+            currentSpeed = runSpeed;
+
+            anim.SetBool("isRunning", isRunning);
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift)) 
+        {
+            isRunning = false;
+            currentSpeed = moveSpeed;
+
+            anim.SetBool("isRunning", false);
+        }
+    }
+
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
     }
 }
