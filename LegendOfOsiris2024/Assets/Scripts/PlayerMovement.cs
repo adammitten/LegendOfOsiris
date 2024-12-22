@@ -15,6 +15,11 @@ public class PlayerMovement : MonoBehaviour
 
     Vector2 movement;
 
+    void Start()
+    {
+        currentSpeed = moveSpeed;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -47,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
             isRunning = true;
             currentSpeed = runSpeed;
 
-            anim.SetBool("isRunning", isRunning);
+            anim.SetBool("isRunning", true);
         }
 
         if (Input.GetKeyUp(KeyCode.LeftShift)) 
