@@ -27,10 +27,16 @@ public class PlayerMovement : MonoBehaviour
 
         HandleRunning();
 
-        if(Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
+        if (movement.x != 0 || movement.y != 0)
         {
-            anim.SetFloat("LastMoveX", Input.GetAxisRaw("Horizontal"));
-            anim.SetFloat("LastMoveY", Input.GetAxisRaw("Vertical"));
+            anim.SetFloat("LastMoveX", movement.x);
+            anim.SetFloat("LastMoveY", movement.y);
+        }
+
+        else if (movement.sqrMagnitude == 0) 
+        {
+            anim.SetFloat("Speed", 0);
+            anim.SetBool("isRunning",  false);
         }
     }
 
