@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float runSpeed = 10f;
+    public float runSpeed = 7f;
     private float currentSpeed;
 
     private bool isRunning = false;
@@ -60,6 +60,16 @@ public class PlayerMovement : MonoBehaviour
             isRunning = false;
             currentSpeed = moveSpeed;
 
+            anim.SetBool("isRunning", false);
+        }
+
+        if (isRunning && (movement.x != 0 || movement.y != 0))
+        {
+            anim.SetBool("isRunning", true);
+        }
+
+        else if (movement.sqrMagnitude == 0 || !isRunning)
+        {
             anim.SetBool("isRunning", false);
         }
     }
