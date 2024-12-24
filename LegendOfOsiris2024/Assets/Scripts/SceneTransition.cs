@@ -12,21 +12,36 @@ public class SceneTransition : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            LoadNewScene();
+            StartCoroutine(LoadNewScene());
         }
     }
 
-    private void LoadNewScene()
+    private IEnumerator LoadNewScene()
     {
-        SceneManager.LoadScene(sceneToLoad);
-    }
-    public void ChangeScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneToLoad);
+
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        SetPlayerPosition();
     }
 
-    private void Start()
+    private void SetPlayerPosition()
     {
-        transform.position = newPosition;
+           
+         GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                player.transform.position = newPosition;  
+            }
+            else
+            {
+                Debug.LogWarning("Player object not found in the scene.");
+            }
     }
+    
 }
