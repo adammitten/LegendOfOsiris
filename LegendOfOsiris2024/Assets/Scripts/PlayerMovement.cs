@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
     public float runSpeed = 7f;
     private float currentSpeed;
+    public VectorValue startingPosition;
 
     private bool isRunning = false;
 
@@ -18,6 +19,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         currentSpeed = moveSpeed;
+
+        transform.position = startingPosition.initialValue;
     }
 
     // Update is called once per frame
