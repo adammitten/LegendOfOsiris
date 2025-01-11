@@ -9,9 +9,8 @@ public class PickupObject : MonoBehaviour
     private Collider2D col;
 
     [Header("Throwing Settings")]
-    public float throwForce = 10f;  // Exposing throw force to the inspector for flexibility
+    public float throwForce = 10f;  
 
-    // Called when the object is picked up
     public void PickUp(Transform playerTransform)
     {
         if (isPickedUp) return;
@@ -21,32 +20,31 @@ public class PickupObject : MonoBehaviour
         col = GetComponent<Collider2D>();
 
         rb.isKinematic = true;
-        col.enabled = false;  // Disable collision when picked up
-        transform.position = playerTransform.position;  // Set object position to the player
-        transform.SetParent(playerTransform);  // Make the object follow the player
+        col.enabled = false;   
+        transform.SetParent(playerTransform);
+        transform.localPosition = new Vector3(0, 1, 0);
     }
 
-    // Called when the object is thrown
     public void Throw(Vector2 direction)
     {
         if (!isPickedUp) return;
 
         isPickedUp = false;
-        transform.SetParent(null);  // Detach object from player
-        rb.isKinematic = false;  // Enable physics again
-        col.enabled = true;  // Re-enable collision
-        rb.velocity = direction * throwForce;  // Apply throw force to the object
+        transform.SetParent(null);  
+        rb.isKinematic = false;  
+        col.enabled = true;  
+        rb.velocity = direction * throwForce;  
 
-        // Optional: You could also add a small angular velocity for a more realistic throw
-        rb.angularVelocity = Random.Range(-50f, 50f);  // Randomize angular velocity for a more natural throw
+       
+        rb.angularVelocity = Random.Range(-50f, 50f);  
     }
 
-    // Optional: You could add a method to handle collision with the player while it's being held
+   
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isPickedUp && collision.gameObject.CompareTag("Player"))
         {
-            // Prevent the object from colliding with the player while being held
+           
             Physics2D.IgnoreCollision(collision.collider, col);
         }
     }
