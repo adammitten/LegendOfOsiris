@@ -10292,11 +10292,51 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!1 &553698739 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3176251607503658278, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+  m_PrefabInstance: {fileID: 1937167253028566557}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &553698740 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2699700510589857890, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
   m_PrefabInstance: {fileID: 1937167253028566557}
   m_PrefabAsset: {fileID: 0}
+--- !u!58 &553698745
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553698739}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0125050545, y: -0.037515163}
+  serializedVersion: 2
+  m_Radius: 0.8247271
 --- !u!1 &601645792
 GameObject:
   m_ObjectHideFlags: 0
@@ -46342,6 +46382,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986069892}
     m_Modifications:
+    - target: {fileID: 1453292856338953696, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1453292856338953696, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1453292856338953696, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      propertyPath: m_LinearDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1453292856338953696, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      propertyPath: m_GravityScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2699700510589857890, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.47
@@ -46394,10 +46450,17 @@ PrefabInstance:
       propertyPath: m_TagString
       value: PickupObject
       objectReference: {fileID: 0}
+    - target: {fileID: 4720063305339975796, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      propertyPath: throwForce
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3176251607503658278, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 553698745}
   m_SourcePrefab: {fileID: 100100000, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
 --- !u!1001 &4277996836994223640
 PrefabInstance:
@@ -46522,6 +46585,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5743063826309788096, guid: e3a83b53f9cbcc34682e16544b6adae9, type: 3}
+      propertyPath: throwForce
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743063826309788096, guid: e3a83b53f9cbcc34682e16544b6adae9, type: 3}
       propertyPath: holdPosition
       value: 
       objectReference: {fileID: 1337537741}
@@ -46529,6 +46596,10 @@ PrefabInstance:
       propertyPath: objectPrefab
       value: 
       objectReference: {fileID: 3176251607503658278, guid: 11f0eb8e798cab4499a457edc025a317, type: 3}
+    - target: {fileID: 5743063826309788096, guid: e3a83b53f9cbcc34682e16544b6adae9, type: 3}
+      propertyPath: maxThrowDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5743063826309788096, guid: e3a83b53f9cbcc34682e16544b6adae9, type: 3}
       propertyPath: startingPosition
       value: 

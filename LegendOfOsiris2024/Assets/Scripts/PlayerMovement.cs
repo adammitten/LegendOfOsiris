@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject heldObject = null;
     public float pickupRange = 2f;
     public float throwForce = 10f;
+    public float maxThrowDistance = 10f;
     public LayerMask pickUpLayer;
 
     public GameObject objectPrefab;
@@ -32,12 +33,17 @@ public class PlayerMovement : MonoBehaviour
         transform.position = startingPosition.initialValue;
     }
 
-    void Update()
+    private void Update()
     {
-        ProcessMovementInput();
-        HandleRunning();
-        HandleInteraction();
+        bool isPickUpAnimationPlaying = anim.GetCurrentAnimatorStateInfo(0).IsName("PickUp");
 
+        if (!isPickUpAnimationPlaying)
+        {
+            ProcessMovementInput();
+            HandleRunning();
+        }
+
+        HandleInteraction();
         UpdateAnimator();
     }
 
@@ -88,12 +94,18 @@ public class PlayerMovement : MonoBehaviour
             anim.SetFloat("LastMoveX", movement.x);
             anim.SetFloat("LastMoveY", movement.y);
         }
+        else
+        {
+            anim.SetFloat("LastMoveX", anim.GetFloat("LastMoveX"));
+            anim.SetFloat("LastMoveY", anim.GetFloat("LastMoveY"));
+        }
+        
 
         anim.SetBool("isRunning", isRunning && movement.sqrMagnitude > 0);
     }
 
     void FixedUpdate()
-    {
+    { 
         rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
 
         if (isHoldingObject && heldObject != null)
@@ -130,7 +142,14 @@ public class PlayerMovement : MonoBehaviour
             PickupObject pickup = heldObject.GetComponent<PickupObject>();
             if (pickup != null)
             {
+                Rigidbody2D rb = heldObject.GetComponent<Rigidbody2D>();
+                rb.isKinematic = false;
+
                 Vector2 throwDirection = transform.up.normalized;
+                float distance = Vector2.Distance(transform.position, heldObject.transform.position);
+                float clampedThrowForce = Mathf.Clamp(throwForce * distance, 0, maxThrowDistance); 
+                rb.AddForce(throwDirection * clampedThrowForce, ForceMode2D.Impulse);
+
                 pickup.Throw(throwDirection);
                 anim.SetTrigger("Throw");
                 heldObject = null;
