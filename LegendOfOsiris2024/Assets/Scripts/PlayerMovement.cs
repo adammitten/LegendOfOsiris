@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     public float throwForce = 10f;
     public float maxThrowDistance = 10f;
     public LayerMask pickUpLayer;
+    private bool isThrowing = false;
 
     public GameObject objectPrefab;
 
@@ -36,8 +37,11 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         bool isPickUpAnimationPlaying = anim.GetCurrentAnimatorStateInfo(0).IsName("PickUp");
+        bool isThrowAnimationPlaying = anim.GetCurrentAnimatorStateInfo(0).IsName("Throw");
 
-        if (!isPickUpAnimationPlaying)
+        isThrowing = isThrowAnimationPlaying;
+
+        if (!isPickUpAnimationPlaying && !isThrowing)
         {
             ProcessMovementInput();
             HandleRunning();
@@ -49,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void ProcessMovementInput()
     {
+        if (isThrowing) return;
+
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
     }
@@ -105,7 +111,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void FixedUpdate()
-    { 
+    {
+        if (isThrowing) return;
+
         rb.MovePosition(rb.position + movement * currentSpeed * Time.fixedDeltaTime);
 
         if (isHoldingObject && heldObject != null)
@@ -135,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void ThrowObject()
+    public void ThrowObject()
     {
         if (heldObject != null)
         {
@@ -145,17 +153,50 @@ public class PlayerMovement : MonoBehaviour
                 Rigidbody2D rb = heldObject.GetComponent<Rigidbody2D>();
                 rb.isKinematic = false;
 
-                Vector2 throwDirection = transform.up.normalized;
-                float distance = Vector2.Distance(transform.position, heldObject.transform.position);
-                float clampedThrowForce = Mathf.Clamp(throwForce * distance, 0, maxThrowDistance); 
-                rb.AddForce(throwDirection * clampedThrowForce, ForceMode2D.Impulse);
+                Vector2 throwDirection = new Vector2(movement.x, movement.y).normalized;
 
+                if (Mathf.Abs(throwDirection.x) > Mathf.Abs(throwDirection.y))
+                {
+                    throwDirection = new Vector2(Mathf.Sign(throwDirection.x), 0); 
+                }
+                else
+                {
+                    throwDirection = new Vector2(0, Mathf.Sign(throwDirection.y)); 
+                }
+
+
+                if (throwDirection == Vector2.zero)
+                {
+                    throwDirection = new Vector2(0, 1); 
+                }
+
+                float distance = Vector2.Distance(transform.position, heldObject.transform.position);
+                float clampedThrowForce = Mathf.Clamp(throwForce * distance, 0, maxThrowDistance);
+
+                rb.velocity = throwDirection * clampedThrowForce;
                 pickup.Throw(throwDirection);
-                anim.SetTrigger("Throw");
-                heldObject = null;
-                isHoldingObject = false;
+
+                anim.SetTrigger("Throw"); 
+                StartCoroutine(EndThrow());
             }
         }
+    }
+
+    private IEnumerator EndThrow()
+    {
+        isThrowing = true;
+
+        AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+        float animationDuration = stateInfo.length;
+        float timeElapsed = 0f;
+
+        while (timeElapsed < animationDuration)
+        {
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        isThrowing = false;
     }
 
     public void CreateAndThrowObject()

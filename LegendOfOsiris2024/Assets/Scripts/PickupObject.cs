@@ -9,7 +9,10 @@ public class PickupObject : MonoBehaviour
     private Collider2D col;
 
     [Header("Throwing Settings")]
-    public float throwForce = 10f;  
+    public float throwForce = 10f;
+    public float maxThrowDistance = 5f;
+
+    private Vector2 startPosition;
 
     public void PickUp(Transform playerTransform)
     {
@@ -32,11 +35,32 @@ public class PickupObject : MonoBehaviour
         isPickedUp = false;
         transform.SetParent(null);  
         rb.isKinematic = false;  
-        col.enabled = true;  
-        rb.velocity = direction * throwForce;  
+        col.enabled = true;
 
-       
-        rb.angularVelocity = Random.Range(-50f, 50f);  
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            direction = new Vector2(Mathf.Sign(direction.x), 0);
+        }
+        else
+        {
+            direction = new Vector2(0, Mathf.Sign(direction.y));
+        }
+
+
+        rb.velocity = direction * throwForce;
+        rb.angularVelocity = Random.Range(-50f, 50f);
+
+        startPosition = transform.position;
+        StartCoroutine(CheckMaxDistance());
+    }
+    private IEnumerator CheckMaxDistance()
+    {
+        while (Vector2.Distance(startPosition, transform.position) < maxThrowDistance)
+        {
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 
    
