@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     public Animator anim;
 
+    private Vector2 facingDirection = Vector2.down;
     Vector2 movement;
 
     public GameObject heldObject = null;
@@ -57,6 +58,11 @@ public class PlayerMovement : MonoBehaviour
 
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
+        if (movement != Vector2.zero)
+        {
+            facingDirection = movement.normalized;
+        }
     }
 
     private void HandleRunning()
@@ -153,33 +159,27 @@ public class PlayerMovement : MonoBehaviour
                 Rigidbody2D rb = heldObject.GetComponent<Rigidbody2D>();
                 rb.isKinematic = false;
 
-                Vector2 throwDirection = new Vector2(movement.x, movement.y).normalized;
-
-                if (Mathf.Abs(throwDirection.x) > Mathf.Abs(throwDirection.y))
-                {
-                    throwDirection = new Vector2(Mathf.Sign(throwDirection.x), 0); 
-                }
-                else
-                {
-                    throwDirection = new Vector2(0, Mathf.Sign(throwDirection.y)); 
-                }
-
-
+                Vector2 throwDirection = SnapToCardinal(facingDirection);
                 if (throwDirection == Vector2.zero)
-                {
-                    throwDirection = new Vector2(0, 1); 
-                }
+                    throwDirection = Vector2.up;
 
-                float distance = Vector2.Distance(transform.position, heldObject.transform.position);
-                float clampedThrowForce = Mathf.Clamp(throwForce * distance, 0, maxThrowDistance);
-
-                rb.velocity = throwDirection * clampedThrowForce;
-                pickup.Throw(throwDirection);
-
-                anim.SetTrigger("Throw"); 
+                anim.SetTrigger("Throw");
                 StartCoroutine(EndThrow());
+
+                pickup.Throw(throwDirection);
+                heldObject = null;
+                isHoldingObject = false;
             }
+
         }
+    }
+
+    private Vector2 SnapToCardinal(Vector2 dir)
+    {
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+            return new Vector2(Mathf.Sign(dir.x), 0);
+        else
+            return new Vector2(0, Mathf.Sign(dir.y));
     }
 
     private IEnumerator EndThrow()
@@ -202,11 +202,11 @@ public class PlayerMovement : MonoBehaviour
     public void CreateAndThrowObject()
     {
         if (objectPrefab != null) 
-        { 
-            GameObject newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity);
+        {
+            GameObject obj = ObjectPooler.Instance.SpawnFromPool("PickupObject", transform.position, Quaternion.identity);
 
-            PickupObject pickupScript = newObject.GetComponent<PickupObject>();
-            if(pickupScript != null)
+            PickupObject pickupScript = obj.GetComponent<PickupObject>();
+            if (pickupScript != null)
             {
                 pickupScript.PickUp(transform);
             }
