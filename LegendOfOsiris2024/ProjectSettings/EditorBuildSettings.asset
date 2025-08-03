@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Room2.unity
     guid: 5cd42dcaf3b3f19439d389b938efa17d
+  - enabled: 1
+    path: Assets/Scenes/Farm.unity
+    guid: 2adda421367b90f438af3f2dace20808
   m_configObjects: {}
